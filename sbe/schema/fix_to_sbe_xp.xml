@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	package="xp.sbe"
+	id="1"
+	version="0"
+	semanticVersion="4.4"
+	description="prototype"
+	byteOrder="littleEndian">
+<types>
+	<composite name="messageHeader" description="Message identifiers and length of message root.">
+		<type name="blockLength" primitiveType="uint16"/>
+		<type name="templateId" primitiveType="uint16"/>
+		<type name="schemaId" primitiveType="uint16"/>
+		<type name="version" primitiveType="uint16"/>
+	</composite>
+
+	<composite name="groupSizeEncoding" description="Repeating group dimensions.">
+		<type name="blockLength" primitiveType="uint16"/>
+		<type name="numInGroup" primitiveType="uint16"/>
+	</composite>
+
+	<composite name="varStringEncoding" description="Variable length UTF-8 String.">
+		<type name="length" primitiveType="uint32" maxValue="1073741824"/>
+		<type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+	</composite>
+
+	<composite name="varAsciiEncoding" description="Variable length ASCII String.">
+		<type name="length" primitiveType="uint32" maxValue="1073741824"/>
+		<type name="varData" primitiveType="uint8" length="0" characterEncoding="ASCII"/>
+	</composite>
+
+	<composite name="varDataEncoding" description="Variable length binary blob.">
+		<type name="length" primitiveType="uint32" maxValue="1073741824"/>
+		<type name="varData" primitiveType="uint8" length="0"/>
+	</composite>
+	
+	<enum name="Boolean" encodingType="char">
+		<validValue name="TRUE">Y</validValue>
+		<validValue name="FALSE">N</validValue>
+	</enum>
+	
+	<type name="SeqNum" primitiveType="uint32" semanticType="Int" />
+	<type name="MessageType" primitiveType="char" length="3" characterEncoding="ASCII"/>
+</types>
+
+<sbe:message name="Logon" id="65" semanticType="A" description="Logon Message">
+
+	<field name="EncryptMethod" id="98" type="uint8"/>
+	<field name="HeartBtInt" id="108" type="uint8" />
+	<field name="ResetSeqNumFlag" id="141" type="Boolean"/>
+	<field name="NextExpectedMsgSeqNum" id="789" type="SeqNum"/>
+	<field name="MaxMessageSize" id="383" type="uint32"/>
+	<field name="TestMessageIndicator" id="464" type="Boolean"/>
+	<group name="NoMsgTypes" id="384">
+		<field name="RefMsgType" id="372" type="MessageType"/>
+		<field name="MsgDirection" id="385" type="char"/>
+	</group>
+	<data name="Username" id="553" type="varAsciiEncoding" semanticType="string"/>
+	<data name="Password" id="554" type="varAsciiEncoding" semanticType="string"/>
+	<data name="RawData" id="96" type="varDataEncoding" semanticType="data"/>
+
+</sbe:message>
+
+</sbe:messageSchema>
